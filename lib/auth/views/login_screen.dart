@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../data/usuarios_local.dart';
+import '../services/auth_service.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -10,19 +10,25 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  void _login() {
+  // ---- LOGIN REAL CON NODE ----
+  void _login() async {
     final email = _emailController.text.trim();
-    final pass = _passwordController.text.trim();
+    final password = _passwordController.text.trim();
 
-    final existe = usuarios.any(
-      (u) => u["email"] == email && u["password"] == pass,
-    );
+    if (email.isEmpty || password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Rellena todos los campos")),
+      );
+      return;
+    }
 
-    if (existe) {
+    final response = await AuthService.login(email, password);
+
+    if (response["ok"] == true) {
       Navigator.pushNamed(context, '/home');
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Credenciales incorrectas")),
+        SnackBar(content: Text(response["message"] ?? "Credenciales incorrectas")),
       );
     }
   }
@@ -44,7 +50,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   cursor: SystemMouseCursors.click,
                   child: Icon(
                     Icons.home_outlined,
-                    size: 40,      // MÁS GRANDE
+                    size: 40,
                     color: Colors.black87,
                   ),
                 ),
@@ -64,7 +70,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       "Nos alegra volver a verte",
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        fontSize: 40,                       // MÁS GRANDE
+                        fontSize: 40,
                         fontWeight: FontWeight.w900,
                         color: Colors.black,
                       ),
@@ -194,7 +200,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           "ACCEPT",
                           style: TextStyle(
                             color: Colors.white,
-                            fontSize: 22,          // MÁS GRANDE
+                            fontSize: 22,
                             fontWeight: FontWeight.w900,
                           ),
                         ),
@@ -208,8 +214,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       width: 230,
                       height: 60,
                       child: ElevatedButton(
-                        onPressed: () =>
-                            Navigator.pushNamed(context, '/register'),
+                        onPressed: () => Navigator.pushNamed(context, '/register'),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.black,
                           shape: RoundedRectangleBorder(
@@ -220,7 +225,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           "SIGN UP",
                           style: TextStyle(
                             color: Colors.white,
-                            fontSize: 20, // MÁS GRANDE
+                            fontSize: 20,
                             fontWeight: FontWeight.w900,
                           ),
                         ),
@@ -236,7 +241,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         const Text(
                           "CALC",
                           style: TextStyle(
-                            fontSize: 33, // MÁS GRANDE
+                            fontSize: 33,
                             color: Colors.black,
                             fontWeight: FontWeight.w900,
                           ),
@@ -252,7 +257,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         const SizedBox(width: 12),
                         Image.asset(
                           'assets/logo_transparente.png',
-                          width: 60,   // MÁS GRANDE
+                          width: 60,
                           height: 60,
                         ),
                       ],
