@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../auth/services/auth_service.dart';
 
-
 class RegisterScreen extends StatefulWidget {
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
@@ -16,7 +15,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool _hide2 = true;
   bool loading = false;
 
-  /// ------------------ FUNCIÓN REGISTRAR ------------------
   Future<void> _registrar() async {
     final email = _email.text.trim();
     final pass = _pass.text.trim();
@@ -46,14 +44,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
   }
 
-  /// ------------------ ALERTA ------------------
   void _alert(String msg) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(msg)),
     );
   }
 
-  /// ------------------ PANTALLA ------------------
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,7 +57,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
       body: SafeArea(
         child: Stack(
           children: [
-            /// ICONO HOME
             Positioned(
               top: 25,
               right: 25,
@@ -75,10 +70,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
             ),
 
-            /// CONTENIDO
             Center(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
+                padding: const EdgeInsets.symmetric(horizontal: 25),
                 child: Column(
                   children: [
                     const SizedBox(height: 35),
@@ -91,7 +85,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         color: Colors.black,
                       ),
                     ),
+
                     const SizedBox(height: 5),
+
                     const Text(
                       "Crea tu cuenta de CalcNow",
                       style: TextStyle(
@@ -102,25 +98,52 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                     const SizedBox(height: 50),
 
-                    /// EMAIL
-                    _buildLabel("Correo electrónico"),
-                    _buildInput(_email, false),
+                    /// ---------------- EMAIL ----------------
+                    SizedBox(
+                      width: 370,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildLabel("Correo electrónico"),
+                          const SizedBox(height: 6),
+                          _buildInput(_email),
+                        ],
+                      ),
+                    ),
 
-                    const SizedBox(height: 22),
+                    const SizedBox(height: 25),
 
-                    /// CONTRASEÑA
-                    _buildLabel("Crea una contraseña"),
-                    _buildInput(_pass, true, toggle: () {
-                      setState(() => _hide1 = !_hide1);
-                    }, obscure: _hide1),
+                    /// ---------------- CONTRASEÑA ----------------
+                    SizedBox(
+                      width: 370,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildLabel("Crea una contraseña"),
+                          const SizedBox(height: 6),
+                          _buildInput(_pass,
+                              obscure: _hide1,
+                              toggle: () => setState(() => _hide1 = !_hide1)),
+                        ],
+                      ),
+                    ),
 
-                    const SizedBox(height: 22),
+                    const SizedBox(height: 25),
 
-                    /// CONFIRMAR CONTRASEÑA
-                    _buildLabel("Confirmar contraseña"),
-                    _buildInput(_confirm, true, toggle: () {
-                      setState(() => _hide2 = !_hide2);
-                    }, obscure: _hide2),
+                    /// ---------------- CONFIRMAR CONTRASEÑA ----------------
+                    SizedBox(
+                      width: 370,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildLabel("Confirmar contraseña"),
+                          const SizedBox(height: 6),
+                          _buildInput(_confirm,
+                              obscure: _hide2,
+                              toggle: () => setState(() => _hide2 = !_hide2)),
+                        ],
+                      ),
+                    ),
 
                     const SizedBox(height: 45),
 
@@ -151,7 +174,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                     const SizedBox(height: 45),
 
-                    /// LOGO + TEXTO
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -191,59 +213,50 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  /// ----------- LABEL REUTILIZABLE -----------
+  // ---------------- LABEL ----------------
   Widget _buildLabel(String text) {
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: Text(
-        text,
-        style: const TextStyle(
-          fontSize: 17,
-          fontWeight: FontWeight.w600,
-          color: Colors.black87,
-        ),
+    return Text(
+      text,
+      style: const TextStyle(
+        fontSize: 17,
+        fontWeight: FontWeight.w600,
+        color: Colors.black87,
       ),
     );
   }
 
-  /// ----------- INPUT REUTILIZABLE -----------
-  Widget _buildInput(
-    TextEditingController controller,
-    bool hasToggle, {
-    VoidCallback? toggle,
-    bool obscure = false,
-  }) {
-    return SizedBox(
-      width: 350,
-      child: TextFormField(
-        controller: controller,
-        obscureText: obscure,
-        decoration: InputDecoration(
-          filled: true,
-          fillColor: Colors.white,
-          suffixIcon: hasToggle
-              ? IconButton(
-                  icon: Icon(
-                    obscure ? Icons.visibility_off : Icons.visibility,
-                    color: Colors.black87,
-                  ),
-                  onPressed: toggle,
-                )
-              : null,
-          contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: const BorderSide(
-              color: Color(0xFF46899F),
-              width: 2.7,
-            ),
+  // ---------------- INPUT ----------------
+  Widget _buildInput(TextEditingController controller,
+      {bool obscure = false, VoidCallback? toggle}) {
+    return TextFormField(
+      controller: controller,
+      obscureText: obscure,
+      decoration: InputDecoration(
+        filled: true,
+        fillColor: Colors.white,
+        contentPadding:
+            const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+        suffixIcon: toggle != null
+            ? IconButton(
+                icon: Icon(
+                  obscure ? Icons.visibility_off : Icons.visibility,
+                  color: Colors.black87,
+                ),
+                onPressed: toggle,
+              )
+            : null,
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(
+            color: Color(0xFF46899F),
+            width: 2.7,
           ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: const BorderSide(
-              color: Color(0xFF46899F),
-              width: 3.2,
-            ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(
+            color: Color(0xFF46899F),
+            width: 3.2,
           ),
         ),
       ),
